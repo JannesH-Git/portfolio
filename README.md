@@ -1,2 +1,0 @@
-# jannesh-portfolio
-portfolio
