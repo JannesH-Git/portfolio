@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JANNES HOUBEN // TACTICAL PORTFOLIO</title>
+  <meta name="description" content="Jannes Houben — Mendix Expert & Lead Developer. Tactical portfolio.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== OVERLAYS ===== -->
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- ===== CUSTOM CURSOR ===== -->
+  <div class="cursor-reticle" id="cursorReticle" aria-hidden="true">
+    <svg width="40" height="40" viewBox="0 0 40 40">
+      <circle cx="20" cy="20" r="14" stroke="var(--accent)" stroke-width="0.5" fill="none" opacity="0.6"/>
+      <circle cx="20" cy="20" r="6" stroke="var(--accent)" stroke-width="0.5" fill="none" opacity="0.8"/>
+      <line x1="20" y1="0" x2="20" y2="12" stroke="var(--accent)" stroke-width="0.5" opacity="0.6"/>
+      <line x1="20" y1="28" x2="20" y2="40" stroke="var(--accent)" stroke-width="0.5" opacity="0.6"/>
+      <line x1="0" y1="20" x2="12" y2="20" stroke="var(--accent)" stroke-width="0.5" opacity="0.6"/>
+      <line x1="28" y1="20" x2="40" y2="20" stroke="var(--accent)" stroke-width="0.5" opacity="0.6"/>
+      <circle cx="20" cy="20" r="1.5" fill="var(--accent)" opacity="0.9"/>
+    </svg>
+  </div>
+
+  <!-- ===== HERO TARGETING RETICLE (monochrome V2) ===== -->
+  <div class="hero-reticle" id="heroReticle" aria-hidden="true">
+    <svg width="120" height="120" viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r="50" stroke="var(--accent)" stroke-width="0.5" fill="none" opacity="0.3" stroke-dasharray="8 4"/>
+      <circle cx="60" cy="60" r="35" stroke="var(--accent)" stroke-width="0.5" fill="none" opacity="0.4"/>
+      <circle cx="60" cy="60" r="18" stroke="var(--accent)" stroke-width="0.5" fill="none" opacity="0.5"/>
+      <line x1="60" y1="5" x2="60" y2="25" stroke="var(--accent)" stroke-width="0.5" opacity="0.4"/>
+      <line x1="60" y1="95" x2="60" y2="115" stroke="var(--accent)" stroke-width="0.5" opacity="0.4"/>
+      <line x1="5" y1="60" x2="25" y2="60" stroke="var(--accent)" stroke-width="0.5" opacity="0.4"/>
+      <line x1="95" y1="60" x2="115" y2="60" stroke="var(--accent)" stroke-width="0.5" opacity="0.4"/>
+      <text x="62" y="11" fill="var(--accent)" font-size="6" font-family="JetBrains Mono" opacity="0.5">N</text>
+      <text x="108" y="62" fill="var(--accent)" font-size="6" font-family="JetBrains Mono" opacity="0.5">E</text>
+    </svg>
+  </div>
+
+  <!-- ===== SOUND TOGGLE ===== -->
+  <button class="sound-toggle" id="soundToggle" aria-label="Toggle sound">
+    <span class="sound-icon" id="soundIcon">◻ MUTED</span>
+  </button>
+
+  <!-- ===== HUD SIDEBAR ===== -->
+  <nav class="hud-sidebar" id="hudSidebar">
+    <div class="hud-status">
+      <span class="status-dot"></span>
+      <span class="status-text">SYS:ONLINE</span>
+    </div>
+    <div class="hud-altitude" id="hudAltitude">
+      <div class="altitude-track">
+        <div class="altitude-fill" id="altitudeFill"></div>
+        <div class="altitude-marker" id="altitudeMarker"></div>
+      </div>
+      <span class="altitude-value" id="altitudeValue">0000</span>
+    </div>
+    <ul class="hud-nav-links">
+      <li><a href="#hero" class="hud-link active" data-section="hero"><span class="hud-link-marker"></span><span class="hud-link-label">ORIGIN</span></a></li>
+      <li><a href="#briefing" class="hud-link" data-section="briefing"><span class="hud-link-marker"></span><span class="hud-link-label">BRIEFING</span></a></li>
+      <li><a href="#timeline" class="hud-link" data-section="timeline"><span class="hud-link-marker"></span><span class="hud-link-label">OPS LOG</span></a></li>
+      <li><a href="#modules" class="hud-link" data-section="modules"><span class="hud-link-marker"></span><span class="hud-link-label">SYSTEMS</span></a></li>
+      <li><a href="#skills" class="hud-link" data-section="skills"><span class="hud-link-marker"></span><span class="hud-link-label">POWER</span></a></li>
+      <li><a href="#intel" class="hud-link" data-section="intel"><span class="hud-link-marker"></span><span class="hud-link-label">INTEL</span></a></li>
+      <li><a href="#contact" class="hud-link" data-section="contact"><span class="hud-link-marker"></span><span class="hud-link-label">COMMS</span></a></li>
+    </ul>
+  </nav>
+
+  <!-- ===== THREE.JS CANVAS ===== -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-content">
+
+    <!-- ── HERO ── -->
+    <section id="hero" class="section hero-section">
+      <div class="hero-inner">
+        <div class="hero-tag reveal">CLASSIFIED PERSONNEL FILE</div>
+        <h1 class="hero-name glitch" data-text="JANNES HOUBEN">JANNES HOUBEN</h1>
+        <div class="hero-subtitle">
+          <span class="typing-line" id="heroSubtitle"></span><span class="blink-cursor">_</span>
+        </div>
+        <div class="hero-meta reveal">
+          <span class="meta-item"><span class="meta-label">CLEARANCE</span> <span class="meta-value">SILVER II</span></span>
+          <span class="meta-divider">//</span>
+          <span class="meta-item"><span class="meta-label">STATUS</span> <span class="meta-value status-active">ACTIVE</span></span>
+        </div>
+        <div class="hero-scroll-hint reveal">
+          <span class="scroll-arrow">⌄</span>
+          <span>SCROLL TO DECLASSIFY</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── MISSION BRIEFING ── -->
+    <section id="briefing" class="section">
+      <div class="section-header reveal">
+        <span class="section-index">01</span>
+        <h2 class="section-title glitch-hover">MISSION BRIEFING</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="briefing-container">
+        <div class="briefing-card glass-card reveal">
+          <div class="briefing-header">
+            <span class="briefing-badge">◈ DESIGNATION: MENDIX EXPERT</span>
+            <span class="briefing-classification">TOP SECRET</span>
+          </div>
+          <div class="briefing-body">
+            <p class="typewriter-text" id="briefingText" data-full-text="As a Mendix expert, I am confident in my ability to develop high-quality applications that meet your needs. What sets me apart is my ability to communicate effectively and think critically with key stakeholders throughout the development process. I am committed to understanding your business needs and ensuring the end product achieves your goals. In my free time, I enjoy playing football and staying active. This helps me maintain a fresh perspective and stay energized when tackling complex development challenges."></p>
+            <span class="typewriter-cursor" id="briefingCursor">█</span>
+          </div>
+          <div class="briefing-footer">
+            <span class="briefing-timestamp">FILE ACCESSED: <span id="currentTimestamp"></span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TACTICAL TIMELINE (V2 — Expandable) ── -->
+    <section id="timeline" class="section">
+      <div class="section-header reveal">
+        <span class="section-index">02</span>
+        <h2 class="section-title glitch-hover">OPERATIONS LOG</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="timeline-container">
+        <div class="timeline-line" aria-hidden="true">
+          <div class="timeline-line-glow"></div>
+        </div>
+
+        <!-- Timeline Entry 1: YPTO / ProRail -->
+        <div class="timeline-entry reveal" data-year="2021">
+          <div class="timeline-node"><div class="node-pulse"></div><div class="node-dot"></div></div>
+          <div class="timeline-card glass-card">
+            <div class="timeline-card-header">
+              <span class="timeline-period">MAR 2021 — PRESENT</span>
+              <span class="timeline-status status-active">● ACTIVE</span>
+            </div>
+            <h3 class="timeline-role">LEAD DEVELOPER</h3>
+            <div class="timeline-org">
+              <span class="org-name">YPTO / ProRail</span>
+              <span class="org-via">via Ordina Belgium N.V.</span>
+            </div>
+            <p class="timeline-desc terminal-type">Spearheaded the GPRi application — a competency-based examination platform for train operators. Led a cross-functional team of 3 .NET backend devs, an analyst, and a UX/UI designer. Migrated legacy Access application to modern Mendix architecture.</p>
+            <div class="timeline-tech">
+              <span class="tech-tag">Mendix</span>
+              <span class="tech-tag">REST API</span>
+              <span class="tech-tag">SSO/SAML</span>
+              <span class="tech-tag">Postman</span>
+              <span class="tech-tag">Adobe XD</span>
+              <span class="tech-tag">UX/UI</span>
+            </div>
+            <button class="declassify-btn" aria-expanded="false">
+              <span class="declassify-icon">▶</span>
+              <span class="declassify-label">DECLASSIFY FILE</span>
+            </button>
+            <div class="timeline-expanded-wrapper" aria-hidden="true">
+              <div class="timeline-expanded">
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ SITUATION</span>
+                  <p class="expanded-text decrypt-text">As Lead Developer, worked with a team of 3 .NET backend developers, an analyst and a UX/UI designer on a project called GPRi. This application is used to test the theoretical knowledge of train operators based on their competencies. The existing application GPR was built in Access and needed to be rebuilt in Mendix — more user-friendly, better designed, and better engineered.</p>
+                </div>
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ MISSION TASKS</span>
+                  <p class="expanded-text decrypt-text">Initially responsible for building the frontend in Mendix. Promoted to Lead Developer: responsible for full frontend development; advised backend team on optimizations, REST service quality, and data structure improvements; guided UX/UI designer on Mendix-aligned designs; reviewed analyst documents with feedback on optimizations, ambiguities, and new possibilities. Worked closely with the Product Owner from day one. Proposed creating instructional videos for end-user training.</p>
+                </div>
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ RESULT</span>
+                  <p class="expanded-text decrypt-text">Administrators can create questions, answers, and exams linked to specific competencies. Exam type determines the workflow: permanent training exams are assigned by instructors to train operators; quarterly exams auto-assign questions based on operator competencies. Train operators can complete and submit their exams digitally.</p>
+                </div>
+              </div>
+            </div>
+            <div class="decrypt-bar" aria-hidden="true"><div class="decrypt-fill"></div></div>
+          </div>
+        </div>
+
+        <!-- Timeline Entry 2: Continental — First Production Run -->
+        <div class="timeline-entry reveal" data-year="2021">
+          <div class="timeline-node"><div class="node-pulse"></div><div class="node-dot"></div></div>
+          <div class="timeline-card glass-card">
+            <div class="timeline-card-header">
+              <span class="timeline-period">FEB 2021 — MAR 2021</span>
+              <span class="timeline-status">● COMPLETED</span>
+            </div>
+            <h3 class="timeline-role">MENDIX DEVELOPER</h3>
+            <div class="timeline-org">
+              <span class="org-name">Continental</span>
+              <span class="org-via">via Ordina Belgium N.V.</span>
+            </div>
+            <p class="timeline-desc terminal-type">Built the First Production Run application — a workflow system for registering production process changes. Implemented automated email notifications, PDF generation, and SSO authentication via CLAP StarterApp integration.</p>
+            <div class="timeline-tech">
+              <span class="tech-tag">Mendix</span>
+              <span class="tech-tag">SSO</span>
+              <span class="tech-tag">Design Thinking</span>
+              <span class="tech-tag">Agile</span>
+            </div>
+            <button class="declassify-btn" aria-expanded="false">
+              <span class="declassify-icon">▶</span>
+              <span class="declassify-label">DECLASSIFY FILE</span>
+            </button>
+            <div class="timeline-expanded-wrapper" aria-hidden="true">
+              <div class="timeline-expanded">
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ SITUATION</span>
+                  <p class="expanded-text decrypt-text">Continental Belgium uses a Lotus Notes application for registering workflows around production process changes. Since Lotus Notes is being phased out at Continental, this process needs to be migrated to a new application — with improved usability so that working with the new tool is faster.</p>
+                </div>
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ MISSION TASKS</span>
+                  <p class="expanded-text decrypt-text">Using Design Thinking, built a Mendix application for creating new First Production Runs. Automated email notifications with direct links to the relevant production run data. Integrated document generation capabilities. Connected with the CLAP StarterApp for SSO-based user management. Applied an Agile approach: iteratively building increments to deliver full client satisfaction rapidly.</p>
+                </div>
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ RESULT</span>
+                  <p class="expanded-text decrypt-text">A responsive web application where different departments register their production run processes. Five different process forms available (including valves and sensors). Each department has access to specific form sections. Automated emails keep the right people informed at the right moments. PDF generation of all completed information is available.</p>
+                </div>
+              </div>
+            </div>
+            <div class="decrypt-bar" aria-hidden="true"><div class="decrypt-fill"></div></div>
+          </div>
+        </div>
+
+        <!-- Timeline Entry 3: Continental — Lotus Notes Replacement -->
+        <div class="timeline-entry reveal" data-year="2021">
+          <div class="timeline-node"><div class="node-pulse"></div><div class="node-dot"></div></div>
+          <div class="timeline-card glass-card">
+            <div class="timeline-card-header">
+              <span class="timeline-period">JAN 2021</span>
+              <span class="timeline-status">● COMPLETED</span>
+            </div>
+            <h3 class="timeline-role">MENDIX DEVELOPER</h3>
+            <div class="timeline-org">
+              <span class="org-name">Continental</span>
+              <span class="org-via">via Ordina Belgium</span>
+            </div>
+            <p class="timeline-desc terminal-type">Rapid 5-day sprint replacing a Lotus Notes application. Delivered SSO integration via OpenIDConnect, form validation with auto-populated user data, document generation with barcode scanning, and automated mailing system.</p>
+            <div class="timeline-tech">
+              <span class="tech-tag">Mendix</span>
+              <span class="tech-tag">OpenIDConnect</span>
+              <span class="tech-tag">Barcode Gen</span>
+              <span class="tech-tag">REST</span>
+            </div>
+            <button class="declassify-btn" aria-expanded="false">
+              <span class="declassify-icon">▶</span>
+              <span class="declassify-label">DECLASSIFY FILE</span>
+            </button>
+            <div class="timeline-expanded-wrapper" aria-hidden="true">
+              <div class="timeline-expanded">
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ SITUATION</span>
+                  <p class="expanded-text decrypt-text">Continental (Mechelen) wanted to replace a Lotus Notes application with a Mendix Application. Close collaboration between developers and the business stakeholders was essential for this short, high-intensity project.</p>
+                </div>
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ MISSION TASKS</span>
+                  <p class="expanded-text decrypt-text">In approximately 5 days of development, built a tool with: Continental StarterApp integration for User Management (SSO via OpenIDConnect); validated forms with auto-populated user data and master data; document generation with scannable barcodes; administrator-managed master data; automated mailing on form submission; logging of all form modifications.</p>
+                </div>
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ RESULT</span>
+                  <p class="expanded-text decrypt-text">Through close collaboration with the Product Owner, the application was built at exceptional speed. Fast feedback cycles — direct calls and quick demos — enabled the PO to provide immediate answers or escalate to business stakeholders without delay.</p>
+                </div>
+              </div>
+            </div>
+            <div class="decrypt-bar" aria-hidden="true"><div class="decrypt-fill"></div></div>
+          </div>
+        </div>
+
+        <!-- Timeline Entry 4: FOD Mobiliteit — Medicert -->
+        <div class="timeline-entry reveal" data-year="2020">
+          <div class="timeline-node"><div class="node-pulse"></div><div class="node-dot"></div></div>
+          <div class="timeline-card glass-card">
+            <div class="timeline-card-header">
+              <span class="timeline-period">MAY 2020 — OCT 2020</span>
+              <span class="timeline-status">● COMPLETED</span>
+            </div>
+            <h3 class="timeline-role">MENDIX DEVELOPER &amp; UX/UI DESIGNER</h3>
+            <div class="timeline-org">
+              <span class="org-name">FOD Mobiliteit — Medicert</span>
+              <span class="org-via">via Ordina Belgium</span>
+            </div>
+            <p class="timeline-desc terminal-type">Developed a medical certification platform for examining seafarers. Micro-app architecture with Oracle integration (Enig Loket), SAML SSO, automated document generation (PDF/Excel/CSV), REST API data exchange, and database migration.</p>
+            <div class="timeline-tech">
+              <span class="tech-tag">Mendix</span>
+              <span class="tech-tag">SAML/SSO</span>
+              <span class="tech-tag">Oracle</span>
+              <span class="tech-tag">REST API</span>
+              <span class="tech-tag">Micro-app</span>
+              <span class="tech-tag">PDF Gen</span>
+            </div>
+            <button class="declassify-btn" aria-expanded="false">
+              <span class="declassify-icon">▶</span>
+              <span class="declassify-label">DECLASSIFY FILE</span>
+            </button>
+            <div class="timeline-expanded-wrapper" aria-hidden="true">
+              <div class="timeline-expanded">
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ SITUATION</span>
+                  <p class="expanded-text decrypt-text">Worked as Mendix Developer and UX/UI Designer in a team of four on the Minerva project. Medicert is a sub-project used by domestic and foreign doctors and assistants to medically examine seafarers. The application also prevents unlimited medical examinations by different doctors (shopping behavior).</p>
+                </div>
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ MISSION TASKS</span>
+                  <p class="expanded-text decrypt-text">System integrates with Enig Loket (Oracle) for personal data retrieval. Doctors fill in forms and generate PDF medical certificates with dynamic data. All data is sent to Enig Loket via REST API. Built a micro-app architecture for better maintenance and easier future migration. Responsibilities: Security, SAML SSO authentication, automated document creation (PDF/Excel/CSV), automated mailing, data management, REST API integration, automatic events, database migration, and logging.</p>
+                </div>
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ RESULT</span>
+                  <p class="expanded-text decrypt-text">Successfully delivered the Medicert application within the project timeline. The team built a complete Mendix app using micro-app architecture within one month, enabling better maintainability and easier future version migration.</p>
+                </div>
+              </div>
+            </div>
+            <div class="decrypt-bar" aria-hidden="true"><div class="decrypt-fill"></div></div>
+          </div>
+        </div>
+
+        <!-- Timeline Entry 5: FOD MOB — Gordeldracht -->
+        <div class="timeline-entry reveal" data-year="2020">
+          <div class="timeline-node"><div class="node-pulse"></div><div class="node-dot"></div></div>
+          <div class="timeline-card glass-card">
+            <div class="timeline-card-header">
+              <span class="timeline-period">AUG 2020 — OCT 2020</span>
+              <span class="timeline-status">● COMPLETED</span>
+            </div>
+            <h3 class="timeline-role">MENDIX DEVELOPER</h3>
+            <div class="timeline-org">
+              <span class="org-name">FOD MOB — Gordeldracht</span>
+              <span class="org-via">via Ordina Belgium</span>
+            </div>
+            <p class="timeline-desc terminal-type">Rebuilt a legacy Access application for seatbelt exemption management. Citizens authenticate via e-ID, submit requests reviewed by administrative officers. Implemented full SAML SSO, document generation, automated mailing, REST APIs, and audit trail logging.</p>
+            <div class="timeline-tech">
+              <span class="tech-tag">Mendix</span>
+              <span class="tech-tag">e-ID Auth</span>
+              <span class="tech-tag">SAML</span>
+              <span class="tech-tag">AuditTrail</span>
+              <span class="tech-tag">Design Thinking</span>
+            </div>
+            <button class="declassify-btn" aria-expanded="false">
+              <span class="declassify-icon">▶</span>
+              <span class="declassify-label">DECLASSIFY FILE</span>
+            </button>
+            <div class="timeline-expanded-wrapper" aria-hidden="true">
+              <div class="timeline-expanded">
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ SITUATION</span>
+                  <p class="expanded-text decrypt-text">Worked in a team of four (architect, Mendix Expert, Mendix Rapid developer) on the Minerva project. Gordeldracht was a legacy Access application that had to be rebuilt in Mendix because it was no longer maintainable.</p>
+                </div>
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ MISSION TASKS</span>
+                  <p class="expanded-text decrypt-text">Citizens authenticate via e-ID (electronic identity card) and submit seatbelt exemption requests — also possible for others using national registry number. Administrative officers review requests based on attached medical certificates. Built: Security, SAML SSO authentication, automated document creation (PDF/Excel/CSV), automated mailing, data management, micro-app architecture, REST APIs for inter-module data exchange, automatic events, database migration, AuditTrail, and logging. Applied Agile methodology with Design Thinking.</p>
+                </div>
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ RESULT</span>
+                  <p class="expanded-text decrypt-text">Application is in production. Administrative assistants at the Federal Public Service for Mobility (FOD MOB) can enter and generate exemptions. Citizens submit documents to FOD MOB for processing by administrative assistants. Future expansion planned for direct digital document submission by citizens.</p>
+                </div>
+              </div>
+            </div>
+            <div class="decrypt-bar" aria-hidden="true"><div class="decrypt-fill"></div></div>
+          </div>
+        </div>
+
+        <!-- Timeline Entry 6: FOD MOB — StarterApp -->
+        <div class="timeline-entry reveal" data-year="2020">
+          <div class="timeline-node"><div class="node-pulse"></div><div class="node-dot"></div></div>
+          <div class="timeline-card glass-card">
+            <div class="timeline-card-header">
+              <span class="timeline-period">MAY 2020 — OCT 2020</span>
+              <span class="timeline-status">● COMPLETED</span>
+            </div>
+            <h3 class="timeline-role">MENDIX DEVELOPER</h3>
+            <div class="timeline-org">
+              <span class="org-name">FOD MOB — StarterApp</span>
+              <span class="org-via">via Ordina Belgium</span>
+            </div>
+            <p class="timeline-desc terminal-type">Architected the foundational StarterApp template — a reusable Mendix boilerplate containing SAML/SSO authentication, REST API integration (Titularis), automated mailing, micro-app architecture, audit trail, and logging modules.</p>
+            <div class="timeline-tech">
+              <span class="tech-tag">Mendix</span>
+              <span class="tech-tag">SAML/SSO</span>
+              <span class="tech-tag">REST API</span>
+              <span class="tech-tag">Micro-app</span>
+              <span class="tech-tag">AuditTrail</span>
+            </div>
+            <button class="declassify-btn" aria-expanded="false">
+              <span class="declassify-icon">▶</span>
+              <span class="declassify-label">DECLASSIFY FILE</span>
+            </button>
+            <div class="timeline-expanded-wrapper" aria-hidden="true">
+              <div class="timeline-expanded">
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ SITUATION</span>
+                  <p class="expanded-text decrypt-text">The StarterApp serves as a foundational template for building all new applications within the Minerva project. It contains essential modules to get started quickly: Mailing, SAML, Logging, AuditTrail, and other core components.</p>
+                </div>
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ MISSION TASKS</span>
+                  <p class="expanded-text decrypt-text">Built the following functionalities: Security implementation, SAML/SSO authentication, REST API connection with Titularis (for retrieving personal data), automated mailing configuration, micro-app architecture design, AuditTrail implementation, and comprehensive logging system.</p>
+                </div>
+                <div class="expanded-section">
+                  <span class="expanded-label">◈ RESULT</span>
+                  <p class="expanded-text decrypt-text">The StarterApp is now used as the standard template for building all new web applications for FOD MOB. Every new project for the Federal Public Service for Mobility is created using this StarterApp as its foundation.</p>
+                </div>
+              </div>
+            </div>
+            <div class="decrypt-bar" aria-hidden="true"><div class="decrypt-fill"></div></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── SYSTEM MODULES ── -->
+    <section id="modules" class="section">
+      <div class="section-header reveal">
+        <span class="section-index">03</span>
+        <h2 class="section-title glitch-hover">SYSTEM MODULES</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="bento-grid">
+
+        <!-- Tools Module -->
+        <div class="bento-card glass-card bento-lg reveal" data-module="TOOLS">
+          <div class="module-header">
+            <span class="module-icon">⬡</span>
+            <h3 class="module-title">TOOLS</h3>
+            <span class="module-status">11 LOADED</span>
+          </div>
+          <div class="module-bars">
+            <div class="bar-item"><span class="bar-label">MENDIX</span><div class="bar-track"><div class="bar-fill" data-level="80"></div></div><span class="bar-val">4/5</span></div>
+            <div class="bar-item"><span class="bar-label">VS CODE</span><div class="bar-track"><div class="bar-fill" data-level="80"></div></div><span class="bar-val">4/5</span></div>
+            <div class="bar-item"><span class="bar-label">JIRA</span><div class="bar-track"><div class="bar-fill" data-level="80"></div></div><span class="bar-val">4/5</span></div>
+            <div class="bar-item"><span class="bar-label">POSTMAN</span><div class="bar-track"><div class="bar-fill" data-level="80"></div></div><span class="bar-val">4/5</span></div>
+            <div class="bar-item"><span class="bar-label">API</span><div class="bar-track"><div class="bar-fill" data-level="80"></div></div><span class="bar-val">4/5</span></div>
+            <div class="bar-item"><span class="bar-label">JENKINS</span><div class="bar-track"><div class="bar-fill" data-level="60"></div></div><span class="bar-val">3/5</span></div>
+            <div class="bar-item"><span class="bar-label">NOTEPAD++</span><div class="bar-track"><div class="bar-fill" data-level="60"></div></div><span class="bar-val">3/5</span></div>
+            <div class="bar-item"><span class="bar-label">CONFLUENCE</span><div class="bar-track"><div class="bar-fill" data-level="40"></div></div><span class="bar-val">2/5</span></div>
+            <div class="bar-item"><span class="bar-label">ADOBE XD</span><div class="bar-track"><div class="bar-fill" data-level="40"></div></div><span class="bar-val">2/5</span></div>
+            <div class="bar-item"><span class="bar-label">AZURE PIPES</span><div class="bar-track"><div class="bar-fill" data-level="20"></div></div><span class="bar-val">1/5</span></div>
+            <div class="bar-item"><span class="bar-label">ECLIPSE</span><div class="bar-track"><div class="bar-fill" data-level="20"></div></div><span class="bar-val">1/5</span></div>
+          </div>
+        </div>
+
+        <!-- Security Module -->
+        <div class="bento-card glass-card bento-md reveal" data-module="SECURITY">
+          <div class="module-header">
+            <span class="module-icon">⬡</span>
+            <h3 class="module-title">SECURITY</h3>
+            <span class="module-status">5 LOADED</span>
+          </div>
+          <div class="module-bars">
+            <div class="bar-item"><span class="bar-label">SAML</span><div class="bar-track"><div class="bar-fill bar-fill-orange" data-level="80"></div></div><span class="bar-val">4/5</span></div>
+            <div class="bar-item"><span class="bar-label">ADFS/LDAP</span><div class="bar-track"><div class="bar-fill bar-fill-orange" data-level="80"></div></div><span class="bar-val">4/5</span></div>
+            <div class="bar-item"><span class="bar-label">SSO</span><div class="bar-track"><div class="bar-fill bar-fill-orange" data-level="60"></div></div><span class="bar-val">3/5</span></div>
+            <div class="bar-item"><span class="bar-label">JWT</span><div class="bar-track"><div class="bar-fill bar-fill-orange" data-level="60"></div></div><span class="bar-val">3/5</span></div>
+            <div class="bar-item"><span class="bar-label">CLIENT CERTS</span><div class="bar-track"><div class="bar-fill bar-fill-orange" data-level="60"></div></div><span class="bar-val">3/5</span></div>
+          </div>
+        </div>
+
+        <!-- Methods Module -->
+        <div class="bento-card glass-card bento-md reveal" data-module="METHODS">
+          <div class="module-header">
+            <span class="module-icon">⬡</span>
+            <h3 class="module-title">METHODS</h3>
+            <span class="module-status">5 LOADED</span>
+          </div>
+          <div class="module-bars">
+            <div class="bar-item"><span class="bar-label">REST</span><div class="bar-track"><div class="bar-fill" data-level="80"></div></div><span class="bar-val">4/5</span></div>
+            <div class="bar-item"><span class="bar-label">AGILE</span><div class="bar-track"><div class="bar-fill" data-level="60"></div></div><span class="bar-val">3/5</span></div>
+            <div class="bar-item"><span class="bar-label">ISTQB</span><div class="bar-track"><div class="bar-fill" data-level="60"></div></div><span class="bar-val">3/5</span></div>
+            <div class="bar-item"><span class="bar-label">BPMN</span><div class="bar-track"><div class="bar-fill" data-level="60"></div></div><span class="bar-val">3/5</span></div>
+            <div class="bar-item"><span class="bar-label">XP</span><div class="bar-track"><div class="bar-fill" data-level="60"></div></div><span class="bar-val">3/5</span></div>
+          </div>
+        </div>
+
+        <!-- Programming Languages Module -->
+        <div class="bento-card glass-card bento-sm reveal" data-module="LANGUAGES">
+          <div class="module-header">
+            <span class="module-icon">⬡</span>
+            <h3 class="module-title">PROG. LANG</h3>
+            <span class="module-status">5 LOADED</span>
+          </div>
+          <div class="module-bars">
+            <div class="bar-item"><span class="bar-label">JSON</span><div class="bar-track"><div class="bar-fill" data-level="80"></div></div><span class="bar-val">4/5</span></div>
+            <div class="bar-item"><span class="bar-label">XML</span><div class="bar-track"><div class="bar-fill" data-level="60"></div></div><span class="bar-val">3/5</span></div>
+            <div class="bar-item"><span class="bar-label">PL/SQL</span><div class="bar-track"><div class="bar-fill" data-level="40"></div></div><span class="bar-val">2/5</span></div>
+            <div class="bar-item"><span class="bar-label">JAVA</span><div class="bar-track"><div class="bar-fill" data-level="20"></div></div><span class="bar-val">1/5</span></div>
+            <div class="bar-item"><span class="bar-label">JAVASCRIPT</span><div class="bar-track"><div class="bar-fill" data-level="20"></div></div><span class="bar-val">1/5</span></div>
+          </div>
+        </div>
+
+        <!-- Domain Knowledge Module -->
+        <div class="bento-card glass-card bento-sm reveal" data-module="DOMAIN">
+          <div class="module-header">
+            <span class="module-icon">⬡</span>
+            <h3 class="module-title">DOMAIN</h3>
+            <span class="module-status">4 LOADED</span>
+          </div>
+          <div class="module-bars">
+            <div class="bar-item"><span class="bar-label">APP DEV</span><div class="bar-track"><div class="bar-fill" data-level="80"></div></div><span class="bar-val">4/5</span></div>
+            <div class="bar-item"><span class="bar-label">USER STORIES</span><div class="bar-track"><div class="bar-fill" data-level="80"></div></div><span class="bar-val">4/5</span></div>
+            <div class="bar-item"><span class="bar-label">GxP</span><div class="bar-track"><div class="bar-fill" data-level="60"></div></div><span class="bar-val">3/5</span></div>
+            <div class="bar-item"><span class="bar-label">UX/UI</span><div class="bar-track"><div class="bar-fill" data-level="40"></div></div><span class="bar-val">2/5</span></div>
+          </div>
+        </div>
+
+        <!-- Industry Module -->
+        <div class="bento-card glass-card bento-sm reveal" data-module="INDUSTRY">
+          <div class="module-header">
+            <span class="module-icon">⬡</span>
+            <h3 class="module-title">INDUSTRY</h3>
+            <span class="module-status">5 LOADED</span>
+          </div>
+          <div class="module-bars">
+            <div class="bar-item"><span class="bar-label">IT SERVICES</span><div class="bar-track"><div class="bar-fill bar-fill-orange" data-level="80"></div></div><span class="bar-val">4/5</span></div>
+            <div class="bar-item"><span class="bar-label">AUTOMOTIVE</span><div class="bar-track"><div class="bar-fill bar-fill-orange" data-level="60"></div></div><span class="bar-val">3/5</span></div>
+            <div class="bar-item"><span class="bar-label">PHARMA</span><div class="bar-track"><div class="bar-fill bar-fill-orange" data-level="60"></div></div><span class="bar-val">3/5</span></div>
+            <div class="bar-item"><span class="bar-label">GOVERNMENT</span><div class="bar-track"><div class="bar-fill bar-fill-orange" data-level="40"></div></div><span class="bar-val">2/5</span></div>
+            <div class="bar-item"><span class="bar-label">PUBLIC</span><div class="bar-track"><div class="bar-fill bar-fill-orange" data-level="40"></div></div><span class="bar-val">2/5</span></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── POWER LEVELS (Soft Skills + Languages) ── -->
+    <section id="skills" class="section">
+      <div class="section-header reveal">
+        <span class="section-index">04</span>
+        <h2 class="section-title glitch-hover">POWER LEVELS</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="skills-grid">
+
+        <!-- Radar Chart -->
+        <div class="glass-card radar-card reveal">
+          <div class="module-header">
+            <span class="module-icon">◎</span>
+            <h3 class="module-title">CORE ATTRIBUTES</h3>
+          </div>
+          <div class="radar-container">
+            <canvas id="radarChart" width="360" height="360"></canvas>
+          </div>
+          <div class="radar-legend">
+            <span class="legend-item"><span class="legend-dot"></span>Teamwork</span>
+            <span class="legend-item"><span class="legend-dot"></span>Problem-solving</span>
+            <span class="legend-item"><span class="legend-dot"></span>Communication</span>
+            <span class="legend-item"><span class="legend-dot"></span>Leadership</span>
+            <span class="legend-item"><span class="legend-dot"></span>Creativity</span>
+            <span class="legend-item"><span class="legend-dot"></span>Visionary</span>
+          </div>
+        </div>
+
+        <!-- Language Readout -->
+        <div class="glass-card lang-card reveal">
+          <div class="module-header">
+            <span class="module-icon">◎</span>
+            <h3 class="module-title">LANGUAGE MATRIX</h3>
+          </div>
+          <div class="lang-grid">
+            <div class="lang-item">
+              <div class="lang-name">DUTCH</div>
+              <div class="lang-meters">
+                <div class="lang-meter">
+                  <span class="lang-meter-label">VERBAL</span>
+                  <div class="power-blocks">
+                    <span class="pblock active"></span><span class="pblock active"></span><span class="pblock active"></span><span class="pblock active"></span><span class="pblock active"></span>
+                  </div>
+                </div>
+                <div class="lang-meter">
+                  <span class="lang-meter-label">WRITTEN</span>
+                  <div class="power-blocks">
+                    <span class="pblock active"></span><span class="pblock active"></span><span class="pblock active"></span><span class="pblock active"></span><span class="pblock active"></span>
+                  </div>
+                </div>
+              </div>
+              <span class="lang-level">NATIVE</span>
+            </div>
+            <div class="lang-item">
+              <div class="lang-name">ENGLISH</div>
+              <div class="lang-meters">
+                <div class="lang-meter">
+                  <span class="lang-meter-label">VERBAL</span>
+                  <div class="power-blocks">
+                    <span class="pblock active"></span><span class="pblock active"></span><span class="pblock active"></span><span class="pblock active"></span><span class="pblock"></span>
+                  </div>
+                </div>
+                <div class="lang-meter">
+                  <span class="lang-meter-label">WRITTEN</span>
+                  <div class="power-blocks">
+                    <span class="pblock active"></span><span class="pblock active"></span><span class="pblock active"></span><span class="pblock active"></span><span class="pblock"></span>
+                  </div>
+                </div>
+              </div>
+              <span class="lang-level">ADVANCED</span>
+            </div>
+            <div class="lang-item">
+              <div class="lang-name">FRENCH</div>
+              <div class="lang-meters">
+                <div class="lang-meter">
+                  <span class="lang-meter-label">VERBAL</span>
+                  <div class="power-blocks">
+                    <span class="pblock active"></span><span class="pblock"></span><span class="pblock"></span><span class="pblock"></span><span class="pblock"></span>
+                  </div>
+                </div>
+                <div class="lang-meter">
+                  <span class="lang-meter-label">WRITTEN</span>
+                  <div class="power-blocks">
+                    <span class="pblock active"></span><span class="pblock"></span><span class="pblock"></span><span class="pblock"></span><span class="pblock"></span>
+                  </div>
+                </div>
+              </div>
+              <span class="lang-level">BASIC</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Competence Details -->
+        <div class="glass-card competence-card reveal">
+          <div class="module-header">
+            <span class="module-icon">◎</span>
+            <h3 class="module-title">ATTRIBUTE DETAILS</h3>
+          </div>
+          <div class="competence-list">
+            <div class="competence-item">
+              <div class="comp-header"><span class="comp-icon">▹</span><span class="comp-name">TEAMWORK</span></div>
+              <p class="comp-desc terminal-type">Pair programming specialist. Delivered high-quality software in a team of four at FOD Mobiliteit on the Medicert project.</p>
+            </div>
+            <div class="competence-item">
+              <div class="comp-header"><span class="comp-icon">▹</span><span class="comp-name">PROBLEM-SOLVING</span></div>
+              <p class="comp-desc terminal-type">Rapid issue identification through Scrum methodology. Bi-weekly demos ensure fast iteration and defect prevention.</p>
+            </div>
+            <div class="competence-item">
+              <div class="comp-header"><span class="comp-icon">▹</span><span class="comp-name">COMMUNICATION</span></div>
+              <p class="comp-desc terminal-type">Optimized development processes via Scrum collaboration with Product Owners. Proposed instructional videos for faster user onboarding.</p>
+            </div>
+            <div class="competence-item">
+              <div class="comp-header"><span class="comp-icon">▹</span><span class="comp-name">LEADERSHIP</span></div>
+              <p class="comp-desc terminal-type">Mentors team members through challenges. Leads by example to drive continuous improvement and peak performance.</p>
+            </div>
+            <div class="competence-item">
+              <div class="comp-header"><span class="comp-icon">▹</span><span class="comp-name">CREATIVITY</span></div>
+              <p class="comp-desc terminal-type">Out-of-the-box problem solver. When .NET backend delivery stalled at NMBS, took initiative to build the backend in Mendix instead.</p>
+            </div>
+            <div class="competence-item">
+              <div class="comp-header"><span class="comp-icon">▹</span><span class="comp-name">VISIONARY</span></div>
+              <p class="comp-desc terminal-type">Future-oriented thinker. Passionate about development of new functionalities and applications that create lasting impact.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── INTEL DATABASE (Certifications) ── -->
+    <section id="intel" class="section">
+      <div class="section-header reveal">
+        <span class="section-index">05</span>
+        <h2 class="section-title glitch-hover">INTEL DATABASE</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="intel-category reveal">
+        <h3 class="intel-cat-title">◈ FORMAL EDUCATION</h3>
+        <div class="intel-grid">
+          <div class="intel-card glass-card">
+            <div class="intel-year">2014 — 2018</div>
+            <div class="intel-name">TOEGEPASTE INFORMATICA</div>
+            <div class="intel-inst">PXL</div>
+            <span class="intel-badge verified">✓ VERIFIED</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="intel-category reveal">
+        <h3 class="intel-cat-title">◈ CERTIFICATIONS & COURSES</h3>
+        <div class="intel-grid">
+          <div class="intel-card glass-card">
+            <div class="intel-year">2025</div>
+            <div class="intel-name">AGENTIC AI</div>
+            <div class="intel-inst">Mendix</div>
+          </div>
+          <div class="intel-card glass-card">
+            <div class="intel-year">2025</div>
+            <div class="intel-name">AI AGENTS — AGENTIC FRAMEWORKS</div>
+            <div class="intel-inst">Sopra Steria</div>
+          </div>
+          <div class="intel-card glass-card">
+            <div class="intel-year">2025</div>
+            <div class="intel-name">LLM AGENTS IN VR/AR</div>
+            <div class="intel-inst">Sopra Steria</div>
+          </div>
+          <div class="intel-card glass-card">
+            <div class="intel-year">2023</div>
+            <div class="intel-name">MENDIX EXPERT</div>
+            <div class="intel-inst">Mendix</div>
+            <span class="intel-badge verified">✓ VERIFIED</span>
+          </div>
+          <div class="intel-card glass-card">
+            <div class="intel-year">2023</div>
+            <div class="intel-name">SOFTWARE ARCHITECTURE</div>
+            <div class="intel-inst">Sopra Steria</div>
+          </div>
+          <div class="intel-card glass-card">
+            <div class="intel-year">2022</div>
+            <div class="intel-name">SCRUM MASTER</div>
+            <div class="intel-inst">Ordina Academy</div>
+          </div>
+          <div class="intel-card glass-card">
+            <div class="intel-year">2022</div>
+            <div class="intel-name">COACHING SKILLS</div>
+            <div class="intel-inst">Universale</div>
+          </div>
+          <div class="intel-card glass-card">
+            <div class="intel-year">2021</div>
+            <div class="intel-name">ISTQB — CERTIFIED TESTER FL</div>
+            <div class="intel-inst">Ordina</div>
+            <span class="intel-badge verified">✓ VERIFIED</span>
+          </div>
+          <div class="intel-card glass-card">
+            <div class="intel-year">2021</div>
+            <div class="intel-name">BPMN PRO</div>
+            <div class="intel-inst">Ordina</div>
+            <span class="intel-badge verified">✓ VERIFIED</span>
+          </div>
+          <div class="intel-card glass-card">
+            <div class="intel-year">2021</div>
+            <div class="intel-name">SCRUM FUNDAMENTALS CERTIFIED</div>
+            <div class="intel-inst">Ordina</div>
+            <span class="intel-badge verified">✓ VERIFIED</span>
+          </div>
+          <div class="intel-card glass-card">
+            <div class="intel-year">2020</div>
+            <div class="intel-name">UX & INTERFACE DESIGN</div>
+            <div class="intel-inst">Udemy</div>
+            <span class="intel-badge verified">✓ VERIFIED</span>
+          </div>
+          <div class="intel-card glass-card">
+            <div class="intel-year">2019</div>
+            <div class="intel-name">LEAN SIX SIGMA — YELLOW BELT</div>
+            <div class="intel-inst">Ordina</div>
+            <span class="intel-badge verified">✓ VERIFIED</span>
+          </div>
+          <div class="intel-card glass-card">
+            <div class="intel-year">2019</div>
+            <div class="intel-name">FUNCTIONAL ANALYSIS</div>
+            <div class="intel-inst">Ordina</div>
+          </div>
+          <div class="intel-card glass-card">
+            <div class="intel-year">2019</div>
+            <div class="intel-name">COMMUNICATION</div>
+            <div class="intel-inst">Talent to Grow</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="intel-category reveal">
+        <h3 class="intel-cat-title">◈ ONGOING TRAINING</h3>
+        <div class="intel-grid">
+          <div class="intel-card glass-card ongoing">
+            <div class="intel-year blink-slow">IN PROGRESS</div>
+            <div class="intel-name">JAVASCRIPT</div>
+            <div class="intel-inst">PluralSight</div>
+          </div>
+          <div class="intel-card glass-card ongoing">
+            <div class="intel-year blink-slow">IN PROGRESS</div>
+            <div class="intel-name">MENDIX COMPETENCE MEETING</div>
+            <div class="intel-inst">Ordina</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── COMMS CHANNEL ── -->
+    <section id="contact" class="section">
+      <div class="section-header reveal">
+        <span class="section-index">06</span>
+        <h2 class="section-title glitch-hover">COMMS CHANNEL</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="contact-container">
+        <div class="glass-card contact-card reveal">
+          <div class="contact-grid">
+            <div class="contact-item">
+              <span class="contact-label">OPERATIVE</span>
+              <span class="contact-value">Jannes Houben</span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">SECURE CHANNEL</span>
+              <a href="https://www.linkedin.com/in/jannes-houben-56414512b/" target="_blank" rel="noopener noreferrer" class="contact-link">
+                LINKEDIN // OPEN SECURE LINE ↗
+              </a>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">DESIGNATION</span>
+              <span class="contact-value">Mendix Expert — Lead Developer</span>
+            </div>
+          </div>
+          <div class="contact-footer">
+            <span class="contact-transmission">TRANSMISSION SECURE — ENCRYPTED CHANNEL READY</span>
+          </div>
+        </div>
+        <div class="contact-end-sig reveal">
+          <span>[ END OF FILE // CLEARANCE LEVEL: SILVER II // JANNES HOUBEN ]</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
